@@ -1,0 +1,2855 @@
+[
+    {
+        "id": "b235842d.4dca78",
+        "type": "tab",
+        "label": "SHSB"
+    },
+    {
+        "id": "d30fc745.2cf038",
+        "type": "tab",
+        "label": "UI"
+    },
+    {
+        "id": "3cc84ecb.c337b2",
+        "type": "tab",
+        "label": "Forecast"
+    },
+    {
+        "id": "faf569b6.050a98",
+        "type": "tab",
+        "label": "Debug"
+    },
+    {
+        "id": "2a61782f.d59e88",
+        "type": "tab",
+        "label": "CE AM"
+    },
+    {
+        "id": "daf7bcf.1912cc",
+        "type": "tab",
+        "label": "Instagram"
+    },
+    {
+        "id": "a0bb3ad.984afc8",
+        "type": "tab",
+        "label": "Flow 2"
+    },
+    {
+        "id": "4f122a7a.b0edd4",
+        "type": "ibmiot",
+        "z": "",
+        "name": "Solar API Key",
+        "cleansession": true
+    },
+    {
+        "id": "4aabaa3f.b55454",
+        "type": "ibmiot",
+        "z": "d30fc745.2cf038",
+        "name": "Solar API Key 2"
+    },
+    {
+        "id": "93d60a50.6c29f8",
+        "type": "ibmiot",
+        "z": "3cc84ecb.c337b2",
+        "name": "API Key 3"
+    },
+    {
+        "id": "1490ab03.9d0d2d",
+        "type": "ibmiot",
+        "z": "",
+        "name": "5729ox"
+    },
+    {
+        "id": "55492ccd.aab6d4",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 730,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "46c80ba8.b937f4",
+        "type": "http response",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 731.75,
+        "y": 215.75,
+        "wires": []
+    },
+    {
+        "id": "1abb026b.e544fe",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 641.75,
+        "y": 511.75,
+        "wires": []
+    },
+    {
+        "id": "c1d4aa1c.3e2b58",
+        "type": "function",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "func": "var tmpArray = [];\nvar curID = msg.deviceId;\nvar found = false;\n\nif (context.global.deviceArrayInitialized!==true) {\n    context.global.deviceArray = tmpArray;\n    context.global.deviceArrayInitialized = true;\n}\n    \nfor (var i=0; i < context.global.deviceArray.length; i++){\n    if (context.global.deviceArray[i] === curID) { \n        found=true;\n        context.global.deviceArray[i+1] = msg.payload; \n    }\n}\nif (!found) {\n    context.global.deviceArray.push(curID,msg.payload);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 563,
+        "y": 56,
+        "wires": [
+            [
+                "55492ccd.aab6d4"
+            ]
+        ]
+    },
+    {
+        "id": "824fbef6.7db04",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 759,
+        "y": 101,
+        "wires": []
+    },
+    {
+        "id": "abe0fef7.541f",
+        "type": "function",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "func": "var tmpArray = [];\nvar curID = msg.deviceId;\nvar found = false;\n\nif (context.global.batteryArrayInitialized!==true) {\n    context.global.batteryArray = tmpArray;\n    context.global.batteryArrayInitialized = true;\n}\n    \nfor (var i=0; i < context.global.batteryArray.length; i++){\n    if (context.global.batteryArray[i] === curID) { \n        found=true;\n        context.global.batteryArray[i+1] = msg.payload; \n    }\n}\nif (!found) {\n    context.global.batteryArray.push(curID,msg.payload);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 563,
+        "y": 101,
+        "wires": [
+            [
+                "824fbef6.7db04"
+            ]
+        ]
+    },
+    {
+        "id": "3e19ef07.c1e61",
+        "type": "json",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 403,
+        "y": 56,
+        "wires": [
+            [
+                "c1d4aa1c.3e2b58"
+            ]
+        ]
+    },
+    {
+        "id": "b40789b2.4bf878",
+        "type": "json",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 403,
+        "y": 102,
+        "wires": [
+            [
+                "abe0fef7.541f"
+            ]
+        ]
+    },
+    {
+        "id": "2c47e513.d3b81a",
+        "type": "template",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{\n   \"TIMESTAMP\" : \"TIMESTAMP\",\n   \"DEVICE_ID\" : \"{{deviceId}}\",\n   \"IRRADIANCE\" : \"{{payload.avgSolarIrradiance}}\",\n   \"SHADING\" : \"{{payload.shading}}\",\n   \"DEGRADATION\" : \"{{payload.degradation}}\",\n   \"INVERTERCLIPPING\" : \"{{payload.inverterClipping}}\",\n   \"BATTERYLIFE\" : \"{{payload.batteryLife}}\",\n   \"BATTERYAMBIENTTEMP\" : \"{{payload.batteryAmbientTemp}}\",\n   \"BATTERYBUSVOLTAGE\" : \"{{payload.batteryBusVoltage}}\",\n   \"BATTERYSHUNTVOLTAGE\" : \"{{payload.batteryShuntVoltage}}\",\n   \"BATTERYCURRENT\" : \"{{payload.batteryCurrent}}\",\n   \"BATTERYLOADVOLTAGE\" : \"{{payload.batteryLoadVoltage}}\",\n   \"SOLARBUSVOLTAGE\" : \"{{payload.solarBusVoltage}}\",\n   \"SOLARSHUNTVOLTAGE\" : \"{{payload.solarShuntVoltage}}\",\n   \"SOLARCURRENT\" : \"{{-payload.solarCurrent}}\",\n   \"SOLARLOADVOLTAGE\" : \"{{payload.solarLoadVoltage}}\"\n}",
+        "x": 381,
+        "y": 1055,
+        "wires": [
+            [
+                "96066086.69f9a"
+            ]
+        ]
+    },
+    {
+        "id": "96066086.69f9a",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 734,
+        "y": 1056,
+        "wires": []
+    },
+    {
+        "id": "ea987b41.156788",
+        "type": "function",
+        "z": "b235842d.4dca78",
+        "name": "1",
+        "func": "var tmpArray = [];\nvar curID = msg.deviceId;\nvar found = false;\n\nif (context.global.logDataArrayInitialized!==true) {\n    context.global.logDataArray = tmpArray;\n    context.global.logDataArray.length = 0;\n    context.global.logDataArrayInitialized = true;\n}\n    \nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) { \n        found=true;\n        context.global.logDataArray[i+1] = msg.payload; \n    }\n}\n\nif (!found) {\n   context.global.logDataArray.push(curID,msg.payload);\n}\nmsg.typ = typeof(msg.payload.d);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 1158,
+        "wires": [
+            [
+                "95f69ebf.6a096"
+            ]
+        ]
+    },
+    {
+        "id": "71fa6878.8e0598",
+        "type": "json",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 537,
+        "y": 1139,
+        "wires": [
+            [
+                "ea987b41.156788"
+            ]
+        ]
+    },
+    {
+        "id": "95f69ebf.6a096",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 869,
+        "y": 1137,
+        "wires": []
+    },
+    {
+        "id": "f3b3e4d9.0c4c18",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/SmartHomeSolarBattery",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 280,
+        "y": 40,
+        "wires": [
+            [
+                "e2fa5d69.1d05a"
+            ]
+        ]
+    },
+    {
+        "id": "e2fa5d69.1d05a",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>IBM Smart Solar Energy System</title>\n  <link rel=\"stylesheet\" href=\"//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css\">\n  <script src=\"//code.jquery.com/jquery-1.10.2.js\"></script>\n  <script src=\"//code.jquery.com/ui/1.11.4/jquery-ui.js\"></script>\n </head>\n \n <body>\n\n\t<H1 style=\"text-align:center\">IBM Smart Solar Energy System</H1>\n\t<div class=\"btn-group\" style=\"text-align:center\">\n\t\t<button class=\"power\" id=\"power\" style=\"background: url('images/power.png') no-repeat; width: 125px; height: 125px;  border:none; background-size: 100%;\"></button>\t\n\t\t<button class=\"setSolar\" id=\"setSolar\" style=\"background: url('images/sun.png') no-repeat; width: 125px; height: 125px;  border:none; background-size: 100%;\"></button>\n\t\t<button class=\"setUtility\"  id=\"setUtility\" style=\"background: url('images/utility.png') no-repeat; width: 125px; height: 125px;  border:none; background-size: 100%;\"></button>\n\t\t<button class=\"refreshStatus\"  id=\"refreshStatus\" style=\"background: url('images/refresh.png') no-repeat; width: 125px; height: 125px;  border:none; background-size: 100%;\"></button>\n\t</div>\n\t\n\t<div class=\"dBat-group\" style=\"text-align:center\">\n\t    <H2><div class=\"batPercentage\">Battery Charge:</div></H2><img class=\"battery\" src=\"images/bat100.png\">\n\t</div>\n\t\n\t<div class=\"dGauge-group\" style=\"text-align:center\">\n\t    <H2><div class=\"gauges\">Power Measurements:</div></H2>\n\t    <table align=\"center\">\n\t        <tr>\n\t            <td id=\"svchart\" ></td>\n\t            <td id=\"scchart\" ></td>\n\t            <td id=\"bvchart\" ></td>\n\t            <td id=\"bcchart\" ></td>\n\t        </tr>\n\t   </table>\n\t</div>\n\t\n\t<div class=\"dID-group\" style=\"text-align:center\">\n\t    <H2>Device ID:</H2><input type=\"text\" class=\"deviceID\" value=\"e84e061f5af1\">\n\t</div>\n\t\n\t<H2 style=\"text-align:center\">System Status Messages:</H2>\n\t<div style=\"text-align:center\"><textarea class=\"status\" rows=\"8\" cols=\"60\" style=\"font-size:16px\"></textarea></div>\n\t\n\t<H2 style=\"text-align:center\">System Measurements:</H2>\n\t<div style=\"text-align:center\"><textarea class=\"logData\" rows=\"8\" cols=\"60\" style=\"font-size:16px\"></textarea></div>\n\t\n\n<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>  \n<script>\nvar power = document.getElementById(\"power\");\nvar setSolar = document.getElementById(\"setSolar\");\nvar setUtility = document.getElementById(\"setUtility\");\nvar refreshStatus = document.getElementById(\"refreshStatus\");\nvar battery = document.getElementById(\"battery\");\nvar status = document.getElementById(\"status\");\nvar logData = document.getElementById(\"logData\");\nvar deviceID = document.getElementById(\"deviceID\");\nvar batteryV = 0;\nvar solarV = 0;\nvar batteryC = 0;\nvar solarC = 0;\n\n\nfunction getParam( name )\n{\n name = name.replace(/[\\[]/,\"\\\\\\[\").replace(/[\\]]/,\"\\\\\\]\");\n var regexS = \"[\\\\?&]\"+name+\"=([^&#]*)\";\n var regex = new RegExp( regexS );\n var results = regex.exec( window.location.href );\n if( results == null )\n  return \"\";\nelse\n return results[1];\n}\n\n    var dID = getParam( \"device_id\" );\n    if (dID !== \"\")\n    $('.deviceID').attr('value', dID);\n\n\nif ('ontouchstart' in document.documentElement) \n{\n\t$('.power').on('touchstart',function(){executeCommand(\"power\",power);});\n\t$('.power').on('touchend',function(){endCommand(\"power\",power);});\n\t$('.setSolar').on('touchstart',function(){executeCommand(\"setSolar\",setSolar);});\n\t$('.setSolar').on('touchend',function(){endCommand(\"setSolar\",setSolar);});\n\t$('.setUtility').on('touchstart',function(){executeCommand(\"setUtility\",setUtility);});\n\t$('.setUtility').on('touchend',function(){endCommand(\"setUtility\",setUtility);});\n    $('.refreshStatus').on('touchstart',function(){executeCommand(\"refreshStatus\",refreshStatus);});\n\t$('.refreshStatus').on('touchend',function(){endCommand(\"refreshStatus\",refreshStatus);});\n}\t\nelse\n{\n    \n\t$('.power').on('mousedown',function(){executeCommand(\"power\",power);});\n\t$('.power').on('mouseup',function(){endCommand(\"power\",power);});\n\t$('.setSolar').on('mousedown',function(){executeCommand(\"setSolar\",setSolar);});\n\t$('.setSolar').on('mouseup',function(){endCommand(\"setSolar\",setSolar);});\n\t$('.setUtility').on('mousedown',function(){executeCommand(\"setUtility\",setUtility);});\n\t$('.setUtility').on('mouseup',function(){endCommand(\"setUtility\",setUtility);});\n\t$('.refreshStatus').on('mousedown',function(){executeCommand(\"refreshStatus\",refreshStatus);});\n\t$('.refreshStatus').on('mouseup',function(){endCommand(\"refreshStatus\",refreshStatus);});\n}\n\n\nfunction executeCommand(command,control)\n{\n\n\tif (command == \"power\") {\n\t    $.get(\"/api/powerOff?deviceId=\" + $('.deviceID').val());\n\t}\n\tif (command == \"setSolar\") {\n\t    $.get(\"/api/setSolar?deviceId=\" + $('.deviceID').val());\n\t}\n\tif (command == \"setUtility\") {\n\t    $.get(\"/api/setUtility?deviceId=\" + $('.deviceID').val());\n\t}\n\n}\n\nfunction endCommand(command,control)\n{\n    console.log(\"End: \" + command);\n    $('.status').text(\"\");\n    setTimeout(\n        function() \n        {\n            $.get((\"/api/deviceOutput?deviceId=\" + $('.deviceID').val()), function(data){$('.status').text(data);});\n            $.get((\"/api/logDataOutput?deviceId=\" + $('.deviceID').val()), function(data){$('.logData').text(data);});\n            $.get(\"/api/batteryCharge?deviceId=\" + $('.deviceID').val(), function(data){\n                if (parseFloat(data) > 100) {\n                    $('div.batPercentage').html(\"Battery Charge : Charging\");\n                }\n                else {\n                    $('div.batPercentage').html(\"Battery Charge : \" + data + \"%\");\n                }\n                if (data >= 100) $('.battery').attr(\"src\",\"images/bat100.png\");\n                else if (data < 100 && data > 75) $('.battery').attr(\"src\",\"images/bat75.png\");\n                else if (data <= 75 && data > 50) $('.battery').attr(\"src\",\"images/bat50.png\");\n                else if (data <= 50 && data > 25) $('.battery').attr(\"src\",\"images/bat25.png\");\n                else if (data <= 25 && data > 10) $('.battery').attr(\"src\",\"images/bat10.png\");\n                else if (data <= 10 && data > 5) $('.battery').attr(\"src\",\"images/bat5.png\");\n                else if (data <= 5 && data >= 0) $('.battery').attr(\"src\",\"images/bat0.png\");\n                \n            });\n        }, 2000);\n}\n\n      google.load(\"visualization\", \"1\", {packages:[\"gauge\"]});\n      google.setOnLoadCallback(drawChart);\n      function drawChart() {\n        var svdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Solar V', 5],\n        ]);\n\n        var bvdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Battery V', 5],\n        ]);\n        \n        var bcdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Battery mA', 2000]\n        ]);\n        \n        var scdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Solar mA', 200]\n        ]);\n\n        var svOptions = {\n          width: 300, height: 150,\n          min: 0.0, max: 6.0,\n          redFrom: 0, redTo: 5.0,\n          yellowFrom: 5.0, yellowTo: 5.5,\n          greenFrom: 5.5, greenTo: 6.0,\n          majorTicks: [\"0.0\",\"\",\"1.0\",\"\",\"2.0\",\"\",\"3.0\",\"\",\"4.0\",\"\",\"5.0\",\"\",\"6.0\"],\n          minorTicks: 5\n        };\n        \n        var bvOptions = {\n          width: 300, height: 150,\n          min: 0.0, max: 4.3,\n          redFrom: 0, redTo: 3.6,\n          yellowFrom: 3.6, yellowTo: 3.9,\n          greenFrom: 3.9, greenTo: 4.3,\n          majorTicks: [\"0.0\",\"\",\"1.0\",\"\",\"2.0\",\"\",\"3.0\",\"\",\"4.0\",\"\"],\n          minorTicks: 5\n        };\n        \n        var bcOptions = {\n          width: 300, height: 150,\n          min: -900, max: 900,\n          redFrom: -900,\n          redTo: 0,\n          greenFrom: 0,\n          greenTo: 900,\n          majorTicks: [\"-900\",\"\",\"-600\",\"\",\"-300\",\"\",\"0\",\"\",\"300\",\"\",\"600\",\"\",\"900\"],\n          minorTicks: 5\n        };\n        \n        var scOptions = {\n          width: 300, height: 150,\n          min: 0, max: 1000,\n// It doesn't really make sense to colour code the solar current as it\n// depends on not only on the illumination of the panel but also the\n// system needs - ie does the battery need charging etc.\n//          redFrom: 0, redTo: 100,\n//          yellowFrom: 100, yellowTo: 250,\n//          greenFrom: 250, greenTo: 1000,\n          majorTicks: [\"0\",\"\",\"200\",\"\",\"400\",\"\",\"600\",\"\",\"800\",\"\",\"1000\"],\n          minorTicks: 5\n        };\n        var svchart = new google.visualization.Gauge(document.getElementById('svchart'));\n        var bvchart = new google.visualization.Gauge(document.getElementById('bvchart'));\n        var bcchart = new google.visualization.Gauge(document.getElementById('bcchart'));\n        var scchart = new google.visualization.Gauge(document.getElementById('scchart'));\n\n        svchart.draw(svdata, svOptions);\n        bvchart.draw(bvdata, bvOptions);\n        bcchart.draw(bcdata, bcOptions);\n        scchart.draw(scdata, scOptions);\n        \n        setInterval(function() {\n          $.get((\"/api/batteryVoltage?deviceId=\" + $('.deviceID').val()), function(data){batteryV = data;});\n          bvdata.setValue(0, 1, batteryV);\n          bvchart.draw(bvdata, bvOptions);\n        }, 1000);\n        setInterval(function() {\n          $.get((\"/api/batteryCurrent?deviceId=\" + $('.deviceID').val()), function(data){batteryC = data;});\n          bcdata.setValue(0, 1, batteryC);\n          bcchart.draw(bcdata, bcOptions);\n        }, 1000);\n        setInterval(function() {\n          $.get((\"/api/solarVoltage?deviceId=\" + $('.deviceID').val()), function(data){solarV = data;});\n          svdata.setValue(0, 1, solarV);\n          svchart.draw(svdata, svOptions);\n        }, 1000);\n        setInterval(function() {\n          $.get((\"/api/solarCurrent?deviceId=\" + $('.deviceID').val()), function(data){solarC = data;});\n          scdata.setValue(0, 1, solarC);\n          scchart.draw(scdata, scOptions);\n        }, 1000);\n        setInterval(function() {\n         $.get(\"/api/batteryCharge?deviceId=\" + $('.deviceID').val(), function(data){\n                if (data > 100) {\n                    $('div.batPercentage').html(\"Battery Charge: Charging\");\n                }\n                else {\n                    $('div.batPercentage').html(\"Battery Charge: \" + data + \"%\");\n                }\n\n                if (data >= 100) $('.battery').attr(\"src\",\"images/bat100.png\");\n                else if (data < 100 && data > 75) $('.battery').attr(\"src\",\"images/bat75.png\");\n                else if (data <= 75 && data > 50) $('.battery').attr(\"src\",\"images/bat50.png\");\n                else if (data <= 50 && data > 25) $('.battery').attr(\"src\",\"images/bat25.png\");\n                else if (data <= 25 && data > 10) $('.battery').attr(\"src\",\"images/bat10.png\");\n                else if (data <= 10 && data > 5) $('.battery').attr(\"src\",\"images/bat5.png\");\n                else if (data <= 5 && data >= 0) $('.battery').attr(\"src\",\"images/bat0.png\");\n            });\n        }, 1000);\n      }\n      \n  </script>\n\n</body>\n</html>",
+        "x": 584,
+        "y": 50,
+        "wires": [
+            [
+                "2677e129.d9881e"
+            ]
+        ]
+    },
+    {
+        "id": "2677e129.d9881e",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 805,
+        "y": 50,
+        "wires": []
+    },
+    {
+        "id": "4f949e82.b06b6",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/powerOn",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 188,
+        "y": 137,
+        "wires": [
+            [
+                "8ada6e0b.75259",
+                "260a262a.d9f5da"
+            ]
+        ]
+    },
+    {
+        "id": "b42da255.4bd26",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 830,
+        "y": 134,
+        "wires": []
+    },
+    {
+        "id": "cf3abe47.30c54",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{ \"deviceId\": \"{{payload.deviceId}}\"\n}",
+        "x": 549,
+        "y": 133,
+        "wires": [
+            [
+                "b42da255.4bd26",
+                "fc915c93.036ea"
+            ]
+        ]
+    },
+    {
+        "id": "ecb989ef.134678",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/setSolar",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 118,
+        "y": 446,
+        "wires": [
+            [
+                "fca21493.035de8",
+                "bba4d746.445b28",
+                "fbccf236.b55d8"
+            ]
+        ]
+    },
+    {
+        "id": "543a33ee.abc5cc",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "json",
+        "template": "{\n    \"deviceId\": \"{{payload.deviceId}}\",\n    \"powerMode\": \"SOLAR\"\n}",
+        "x": 617,
+        "y": 410,
+        "wires": [
+            [
+                "e854a400.17ab6",
+                "8caa23f2.7355e"
+            ]
+        ]
+    },
+    {
+        "id": "e854a400.17ab6",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 851,
+        "y": 514,
+        "wires": []
+    },
+    {
+        "id": "8ada6e0b.75259",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 502,
+        "y": 201,
+        "wires": []
+    },
+    {
+        "id": "6c215494.93deac",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/setUtility",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 566,
+        "wires": [
+            [
+                "fca21493.035de8",
+                "aa0abb8a.55f548",
+                "fbccf236.b55d8"
+            ]
+        ]
+    },
+    {
+        "id": "a2612ec7.5d9ed",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{\n    \"deviceId\": \"{{payload.deviceId}}\",\n    \"powerMode\": \"UTILITY\"\n}",
+        "x": 612,
+        "y": 588,
+        "wires": [
+            [
+                "47827440.b87d8c",
+                "f0c3d0f3.0f3c3"
+            ]
+        ]
+    },
+    {
+        "id": "47827440.b87d8c",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 933,
+        "y": 673,
+        "wires": []
+    },
+    {
+        "id": "fca21493.035de8",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 492,
+        "y": 506,
+        "wires": []
+    },
+    {
+        "id": "f4ce9bd5.0b3168",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/powerOff",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 130.5,
+        "y": 284,
+        "wires": [
+            [
+                "8ada6e0b.75259",
+                "4b7462d3.b48b9c",
+                "3763ac79.c89c54"
+            ]
+        ]
+    },
+    {
+        "id": "ca04c5f8.35fb38",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 781.5,
+        "y": 294,
+        "wires": []
+    },
+    {
+        "id": "29110a9f.d6eef6",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{ \"deviceId\": \"{{payload.deviceId}}\" }",
+        "x": 509.5,
+        "y": 312,
+        "wires": [
+            [
+                "ca04c5f8.35fb38",
+                "8ca407c5.735bf8"
+            ]
+        ]
+    },
+    {
+        "id": "58b22b8a.a74dd4",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/deviceOutput",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 117,
+        "y": 759,
+        "wires": [
+            [
+                "4587b28f.65985c",
+                "7d2420ef.82dbe"
+            ]
+        ]
+    },
+    {
+        "id": "ce19b960.31e648",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 838,
+        "y": 724,
+        "wires": []
+    },
+    {
+        "id": "7d2420ef.82dbe",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var curID = msg.payload.deviceId;\nvar found = false;\n\nfor (var i=0; i < context.global.deviceArray.length; i++){\n    if (context.global.deviceArray[i] === curID) {\n        msg.payload = context.global.deviceArray[i+1];\n    }\n}\nmsg.payload = msg.payload.replace(\"#x2F;\",\"\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 357,
+        "y": 701.3333129882812,
+        "wires": [
+            [
+                "7561139c.8a9eec",
+                "9476fbfc.339688"
+            ]
+        ]
+    },
+    {
+        "id": "d62b5a99.29d4a8",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 822,
+        "y": 807.3333129882812,
+        "wires": []
+    },
+    {
+        "id": "eae74b55.1518b8",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "html",
+        "template": "Power Mode: {{payload.powerMode}}\nCurrent Temperature: {{payload.currentTemp}}C \nCurrent Conditions: {{payload.currentCond}}\nForecast: {{payload.forecast}}\nUtility Provider: {{payload.utility}}\nUtility Rate: {{payload.utilityRate}}/kWh",
+        "x": 672,
+        "y": 732.3333129882812,
+        "wires": [
+            [
+                "ce19b960.31e648",
+                "d62b5a99.29d4a8"
+            ]
+        ]
+    },
+    {
+        "id": "542de8f8.abd218",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/batteryCharge",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 269,
+        "y": 892.3333358764648,
+        "wires": [
+            [
+                "42dcf191.bd231"
+            ]
+        ]
+    },
+    {
+        "id": "b9f63836.4609c8",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 869,
+        "y": 891.3333587646484,
+        "wires": []
+    },
+    {
+        "id": "42dcf191.bd231",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var tmpArray = [];\nvar curID = msg.payload.deviceId;\nvar found = false;\n\nif (context.global.batteryArrayInitialized!==true) {\n    context.global.batteryArray = tmpArray;\n    context.global.batteryArrayInitialized = true;\n}\n\nfor (var i=0; i < context.global.batteryArray.length; i++){\n    if (context.global.batteryArray[i] === curID) {\n        msg.payload = context.global.batteryArray[i+1];\n    }\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 481,
+        "y": 891.6666717529297,
+        "wires": [
+            [
+                "2d6048db.d29fb8"
+            ]
+        ]
+    },
+    {
+        "id": "15b1c42e.ea4e3c",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 861,
+        "y": 949.6666488647461,
+        "wires": []
+    },
+    {
+        "id": "ca73df22.358c2",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{{payload.batteryCharge}}",
+        "x": 728,
+        "y": 890.6666488647461,
+        "wires": [
+            [
+                "b9f63836.4609c8",
+                "15b1c42e.ea4e3c"
+            ]
+        ]
+    },
+    {
+        "id": "7561139c.8a9eec",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 522,
+        "y": 689.3333129882812,
+        "wires": [
+            [
+                "eae74b55.1518b8"
+            ]
+        ]
+    },
+    {
+        "id": "2d6048db.d29fb8",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 607,
+        "y": 892.3333358764648,
+        "wires": [
+            [
+                "ca73df22.358c2"
+            ]
+        ]
+    },
+    {
+        "id": "df8b1ce3.2074e",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 651,
+        "y": 1070.3333358764648,
+        "wires": []
+    },
+    {
+        "id": "1c35b234.e3ca4e",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "SmartSolarSystemLocations",
+        "url": "/SmartSolarSystemLocations",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 268,
+        "y": 1070.3333358764648,
+        "wires": [
+            [
+                "da46679f.25b998"
+            ]
+        ]
+    },
+    {
+        "id": "da46679f.25b998",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "payload",
+        "template": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\">\n    <meta charset=\"utf-8\">\n    <title>Smart Solar Energy Systems</title>\n    <style>\n      html, body, #map-canvas {\n        height: 100%;\n        margin: 0px;\n        padding: 0px\n      }\n    </style>\n    <script src=\"https://maps.googleapis.com/maps/api/js?v=3.exp\"></script>\n    <script>\n\t\tfunction initialize() {\n\t\t  var myLatlng = new google.maps.LatLng(-33.8,151.370122);\n\t\t  var mapOptions = {\n\t\t    zoom: 10,\n\t\t    center: myLatlng\n\t\t  };\n\t\t  \n\t\t  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);\n\t\t  var marker1 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(-33.38,151.402091),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: BC4207E734D2 (virtual)\"\n\t\t  });\n\t\t  var marker2 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(-33.43,151.387581),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 3B54D78D82AC (virtual)\"\n\t\t  });\n\n\t\t  var marker3 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(-33.829142,151.206679),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: e84e061f5af1 (raspberry pi)\"\n\t\t  });\n\t\t  \n\t\t  var marker4 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(-33.444107,151.11009),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 9BFE55EB0C94 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker5 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(33.425771,-111.85163),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 230FE9025C25 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker6 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(32.235244,-110.943206),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: B220F39C0EC0 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker7 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(33.444107,-111.71009),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker8 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(33.425771,-111.99163),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker9 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(32.435244,-110.943206),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker10 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(32.136244,-110.743206),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\t\t  \n\t\t  var marker11 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(42.190478,-71.202091),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\t\t  var marker12 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(41.721865,-70.387581),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\n\t\t  var marker13 = new google.maps.Marker({\n\t\t    position: new google.maps.LatLng(42.029142,-72.306679),\n\t\t    map: map,\n\t\t    animation: google.maps.Animation.DROP,\n\t\t    title: \"DeviceID: 000000000000 (virtual)\"\n\t\t  });\n\t\t  \n\t      marker1.addListener('click', function() {\n            window.location.href = \"/SmartHomeSolarBattery?device_id=BC4207E734D2\";\n          });\n          marker2.addListener('click', function() {\n            window.location.href = \"/SmartHomeSolarBattery?device_id=3B54D78D82AC\";\n          });\n          marker3.addListener('click', function() {\n            window.location.href = \"/SmartHomeSolarBattery?device_id=e84e061f5af1\";\n          });\n          marker4.addListener('click', function() {\n            window.location.href = \"/SmartHomeSolarBattery?device_id=9BFE55EB0C94\";\n          });\n          marker5.addListener('click', function() {\n            window.location.href = \"/SmartHomeSolarBattery?device_id=230FE9025C25\";\n          });\n          marker6.addListener('click', function() {\n            window.location.href = \"/SmartHomeSolarBattery?device_id=B220F39C0EC0\";\n          });\n\t\t};\n\t\t\n\t\tgoogle.maps.event.addDomListener(window, 'load', initialize);\n\n    </script>\n  </head>\n  <body>\n    <div id=\"map-canvas\"></div>\n  </body>\n</html>",
+        "x": 486,
+        "y": 1070.3333358764648,
+        "wires": [
+            [
+                "df8b1ce3.2074e"
+            ]
+        ]
+    },
+    {
+        "id": "f5d654bd.0a29a8",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/logDataOutput",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 265,
+        "y": 1188.3333358764648,
+        "wires": [
+            [
+                "5fa268ee.a05d98"
+            ]
+        ]
+    },
+    {
+        "id": "62004bf9.9dffb4",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 895,
+        "y": 1187.3333358764648,
+        "wires": []
+    },
+    {
+        "id": "5fa268ee.a05d98",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var curID = msg.payload.deviceId;\nvar found = false;\n\nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) {\n        msg.payload = context.global.logDataArray[i+1];\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 466,
+        "y": 1189.666648864746,
+        "wires": [
+            [
+                "478cb1ae.b8735"
+            ]
+        ]
+    },
+    {
+        "id": "7e921479.816dec",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 848,
+        "y": 1258.666648864746,
+        "wires": []
+    },
+    {
+        "id": "690bb0d2.96f45",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "html",
+        "template": "--------------KPI Scores--------------\nAverage Solar Irradiance : {{payload.avgSolarIrradiance}}kWh/m2/day \nShading : {{payload.shading}}\nDegradation : {{payload.degradation}}\nInverter Clipping : {{payload.inverterClipping}}\nBattery Life : {{payload.batteryLife}}\n\n--------------Electrical Measurements--------------\nBattery Bus Voltage : {{payload.batteryBusVoltage}}V\nBattery Shunt Voltage : {{payload.batteryShuntVoltage}}mV\nBattery Current : {{payload.batteryCurrent}}mA\nBattery Load Voltage : {{payload.batteryLoadVoltage}}V\nSolar Bus Voltage : {{payload.solarBusVoltage}}V\nSolar Shunt Voltage : {{payload.solarShuntVoltage}}mV\nSolar Current : {{payload.solarCurrent}}mA\nSolar Load Voltage : {{payload.solarLoadVoltage}}V\n",
+        "x": 749,
+        "y": 1188.666648864746,
+        "wires": [
+            [
+                "62004bf9.9dffb4",
+                "7e921479.816dec"
+            ]
+        ]
+    },
+    {
+        "id": "478cb1ae.b8735",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 610,
+        "y": 1187.666648864746,
+        "wires": [
+            [
+                "690bb0d2.96f45"
+            ]
+        ]
+    },
+    {
+        "id": "230e241c.dcf1dc",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/batteryVoltage",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 265,
+        "y": 1377.3333358764648,
+        "wires": [
+            [
+                "6a8efa6d.957104"
+            ]
+        ]
+    },
+    {
+        "id": "f7b3f3b7.084c1",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 865,
+        "y": 1376.3333587646484,
+        "wires": []
+    },
+    {
+        "id": "6a8efa6d.957104",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var curID = msg.payload.deviceId;\nvar found = false;\n\nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) {\n        msg.payload = context.global.logDataArray[i+1];\n    }\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 458,
+        "y": 1377.6667098999023,
+        "wires": [
+            [
+                "7436da59.8bc924"
+            ]
+        ]
+    },
+    {
+        "id": "e129902f.1ed67",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 857,
+        "y": 1434.666648864746,
+        "wires": []
+    },
+    {
+        "id": "12ee208b.ed11df",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.batteryBusVoltage}}",
+        "x": 724,
+        "y": 1375.666648864746,
+        "wires": [
+            [
+                "f7b3f3b7.084c1",
+                "e129902f.1ed67"
+            ]
+        ]
+    },
+    {
+        "id": "7436da59.8bc924",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 603,
+        "y": 1377.3333358764648,
+        "wires": [
+            [
+                "12ee208b.ed11df"
+            ]
+        ]
+    },
+    {
+        "id": "b869b0dc.47965",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/solarVoltage",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 268,
+        "y": 1525.3333358764648,
+        "wires": [
+            [
+                "6a304b03.95cfb4"
+            ]
+        ]
+    },
+    {
+        "id": "1316c567.ece93b",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 868,
+        "y": 1524.3333587646484,
+        "wires": []
+    },
+    {
+        "id": "6a304b03.95cfb4",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var curID = msg.payload.deviceId;\nvar found = false;\n\nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) {\n        msg.payload = context.global.logDataArray[i+1];\n    }\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 461,
+        "y": 1525.6667098999023,
+        "wires": [
+            [
+                "3724ea27.c8db16"
+            ]
+        ]
+    },
+    {
+        "id": "c5e0e396.3a1f2",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 860,
+        "y": 1582.666648864746,
+        "wires": []
+    },
+    {
+        "id": "6376e2d6.9c891c",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{{payload.solarBusVoltage}}",
+        "x": 727,
+        "y": 1523.666648864746,
+        "wires": [
+            [
+                "1316c567.ece93b",
+                "c5e0e396.3a1f2"
+            ]
+        ]
+    },
+    {
+        "id": "3724ea27.c8db16",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 606,
+        "y": 1525.3333358764648,
+        "wires": [
+            [
+                "6376e2d6.9c891c"
+            ]
+        ]
+    },
+    {
+        "id": "a4d579f4.5b2a88",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/batteryCurrent",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 262,
+        "y": 1657.3333358764648,
+        "wires": [
+            [
+                "9f676705.609898"
+            ]
+        ]
+    },
+    {
+        "id": "20b1c92a.df4e36",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 862,
+        "y": 1656.3333587646484,
+        "wires": []
+    },
+    {
+        "id": "9f676705.609898",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var curID = msg.payload.deviceId;\nvar found = false;\n\nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) {\n        msg.payload = context.global.logDataArray[i+1];\n    }\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 455,
+        "y": 1657.6667098999023,
+        "wires": [
+            [
+                "796fa77d.869058",
+                "b1408287.4ebf8"
+            ]
+        ]
+    },
+    {
+        "id": "b1408287.4ebf8",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 854,
+        "y": 1714.666648864746,
+        "wires": []
+    },
+    {
+        "id": "d55ab37c.2aa55",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{{payload.batteryCurrent}}",
+        "x": 721,
+        "y": 1655.666648864746,
+        "wires": [
+            [
+                "20b1c92a.df4e36",
+                "b1408287.4ebf8"
+            ]
+        ]
+    },
+    {
+        "id": "796fa77d.869058",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 600,
+        "y": 1657.3333358764648,
+        "wires": [
+            [
+                "d55ab37c.2aa55"
+            ]
+        ]
+    },
+    {
+        "id": "c2646784.3d9b98",
+        "type": "http in",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "url": "/api/solarCurrent",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 158,
+        "y": 1770.3333740234375,
+        "wires": [
+            [
+                "9ebbb69c.614448"
+            ]
+        ]
+    },
+    {
+        "id": "60139f.ff9fec6",
+        "type": "http response",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 850,
+        "y": 1793.3333740234375,
+        "wires": []
+    },
+    {
+        "id": "9ebbb69c.614448",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "func": "var curID = msg.payload.deviceId;\nvar found = false;\n\nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) {\n        msg.payload = context.global.logDataArray[i+1];\n    }\n}\n    \nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 244,
+        "y": 1871.666748046875,
+        "wires": [
+            [
+                "bd04b132.42fb5"
+            ]
+        ]
+    },
+    {
+        "id": "9835557.f67caa8",
+        "type": "template",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "field": "",
+        "format": "handlebars",
+        "template": "{{payload.solarCurrent}}",
+        "x": 672,
+        "y": 1755.6666259765625,
+        "wires": [
+            [
+                "60139f.ff9fec6"
+            ]
+        ]
+    },
+    {
+        "id": "b6b1f141.494e1",
+        "type": "template",
+        "z": "3cc84ecb.c337b2",
+        "name": "Parse Forecast",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{ \"deviceId\": \"{{deviceId}}\",\n  \"currentTemp\": \"{{payload.temp}}\",\n  \"currentCond\": \"{{payload.wx_phrase}}, {{payload.sky_cover}}\",\n  \"forecast\": \"{{payload.narrative}}\"\n}",
+        "x": 703.22216796875,
+        "y": 40.666656494140625,
+        "wires": [
+            [
+                "1e69fccf.e19603"
+            ]
+        ]
+    },
+    {
+        "id": "e5dd34db.1a22c8",
+        "type": "inject",
+        "z": "faf569b6.050a98",
+        "name": "trigger",
+        "topic": "",
+        "payload": "",
+        "payloadType": "string",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 220,
+        "y": 120,
+        "wires": [
+            [
+                "78001975.87ffe8"
+            ]
+        ]
+    },
+    {
+        "id": "78001975.87ffe8",
+        "type": "function",
+        "z": "faf569b6.050a98",
+        "name": "dump: context.global ",
+        "func": "// dumps all vars in context.global \nvar objs = \"context.global: \";\n\nfor(var index in context.global) { \n   if(typeof context.global[index] == \"object\"){\n     \tobjs +=  \" \" + showKeys(index,context.global[index]);\n\t} else {\n\t   objs += \" \"+ index+\":\"+context.global[index]+\" , \"; \n\t}\n}\n\nfunction showKeys(parent,keys){\n   \tvar tkeys=\"\";\n   \tfor(var subIndex in keys) { \n\t\tif(typeof context.global[parent][subIndex] == \"object\"){\t\t\n\t\t\ttkeys += \" \"+ showKeysKeys(subIndex,context.global[parent][subIndex],parent);\n\t\t} else {\n\t\t\ttkeys += \" \"+ parent+\".\"+subIndex+\": \"+context.global[parent][subIndex]+\", \";\t\n\t\t}\n\t}\n\treturn tkeys;\n}\n\nfunction showKeysKeys(parent,keys,pp){\n   \tvar tkeys =\"\";\n   \tfor(var subIndex in keys) { \n\t\t\ttkeys += \" \"+pp+\".\"+parent+\".\"+subIndex+\": \"+context.global[pp][parent][subIndex]+\", \";\t\n\t}\n\treturn tkeys;\n}\n\nmsg.payload = objs;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 462,
+        "y": 119,
+        "wires": [
+            [
+                "cf3d5ece.30c2a"
+            ]
+        ]
+    },
+    {
+        "id": "cf3d5ece.30c2a",
+        "type": "debug",
+        "z": "faf569b6.050a98",
+        "name": "show",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 726,
+        "y": 171,
+        "wires": []
+    },
+    {
+        "id": "db39d0da.24c63",
+        "type": "inject",
+        "z": "faf569b6.050a98",
+        "name": "delete var",
+        "topic": "all",
+        "payload": "",
+        "payloadType": "string",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 216,
+        "y": 155,
+        "wires": [
+            [
+                "80ed308.f7f12d"
+            ]
+        ]
+    },
+    {
+        "id": "1817ee4.fe7e812",
+        "type": "function",
+        "z": "faf569b6.050a98",
+        "name": "Set vars example",
+        "func": "context.global.myvar = \"foo\";\ncontext.global.myarry = [\"foo\",\"/\",\"bar\"];\ncontext.global.debug = context.global.debug || {state:0, statePrevious: {pa:1,pb:2,pc:3}, darry: [0,1,2,3] };",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 462,
+        "y": 191,
+        "wires": [
+            [
+                "cf3d5ece.30c2a"
+            ]
+        ]
+    },
+    {
+        "id": "27bec154.d8413e",
+        "type": "inject",
+        "z": "faf569b6.050a98",
+        "name": "trigger",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 220,
+        "y": 192,
+        "wires": [
+            [
+                "1817ee4.fe7e812"
+            ]
+        ]
+    },
+    {
+        "id": "80ed308.f7f12d",
+        "type": "function",
+        "z": "faf569b6.050a98",
+        "name": "delete vars from global.context",
+        "func": "// Delete vars\nif(msg.topic!=\"\"){ \n\tif(msg.topic.toLowerCase() == \"all\"){\n\t\tfor(var index in context.global) { \n\t\t\tdelete context.global[index];\n\t\t}\n\t} else {\n\t\tfor(var index in context.global) { \n\t\t\tif(index == msg.topic){\n\t\t\t\tdelete context.global[index];\n\t\t\t}\n\t\t}\n\t}\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 438,
+        "y": 154,
+        "wires": [
+            [
+                "cf3d5ece.30c2a"
+            ]
+        ]
+    },
+    {
+        "id": "54f37b56.ab0c84",
+        "type": "inject",
+        "z": "faf569b6.050a98",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 228,
+        "y": 283,
+        "wires": [
+            [
+                "f4a16d51.0b5e9"
+            ]
+        ]
+    },
+    {
+        "id": "f4a16d51.0b5e9",
+        "type": "function",
+        "z": "faf569b6.050a98",
+        "name": "",
+        "func": "msg.payload = \"Old Alert : \" +\n    context.global.oldAlert + \" New Alert : \" +\n    context.global.newAlert;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 389,
+        "y": 284,
+        "wires": [
+            [
+                "cf3d5ece.30c2a"
+            ]
+        ]
+    },
+    {
+        "id": "3a8cabcc.c57354",
+        "type": "inject",
+        "z": "faf569b6.050a98",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 225,
+        "y": 365,
+        "wires": [
+            [
+                "b3757456.4c8a88"
+            ]
+        ]
+    },
+    {
+        "id": "b3757456.4c8a88",
+        "type": "function",
+        "z": "faf569b6.050a98",
+        "name": "",
+        "func": "var curID = \"e84e061f5af1\";\nvar found = false;\n\nfor (var i=0; i < context.global.logDataArray.length; i++){\n    if (context.global.logDataArray[i] === curID) {\n        msg.payload = context.global.logDataArray[i+1];\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 386,
+        "y": 366,
+        "wires": [
+            [
+                "cf3d5ece.30c2a"
+            ]
+        ]
+    },
+    {
+        "id": "ed0dfce7.12f2",
+        "type": "http request",
+        "z": "2a61782f.d59e88",
+        "name": "Create RTC Work Item",
+        "method": "POST",
+        "ret": "txt",
+        "url": "https://RTC_SERVER/oslc/contexts/_Ia3zkK1zEeSlxYyKijnAgg/workitems/task",
+        "x": 783.071533203125,
+        "y": 218,
+        "wires": [
+            [
+                "753eee8a.8ac11",
+                "a733d920.58cc28"
+            ]
+        ]
+    },
+    {
+        "id": "753eee8a.8ac11",
+        "type": "debug",
+        "z": "2a61782f.d59e88",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 1024.071533203125,
+        "y": 142,
+        "wires": []
+    },
+    {
+        "id": "95db0543.6a24f8",
+        "type": "function",
+        "z": "2a61782f.d59e88",
+        "name": "Headers",
+        "func": "msg.headers = {\n \"Content-type\" : \"application/rdf+xml\",\n \"OSLC-Core-Version\" : \"2.0\",\n \"Accept\" : \"application/xml\",\n \"X-Jazz-CSRF-Prevent\" : \"1628129C4C897933F1C60323D98700A4\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 508.64292907714844,
+        "y": 139.99999618530273,
+        "wires": [
+            [
+                "665b5f0b.99a4a"
+            ]
+        ]
+    },
+    {
+        "id": "665b5f0b.99a4a",
+        "type": "template",
+        "z": "2a61782f.d59e88",
+        "name": "XML Payload",
+        "field": "payload",
+        "format": "markdown",
+        "template": "<rdf:RDF\n    xmlns:dcterms=\"http://purl.org/dc/terms/\"\n    xmlns:oslc_cm=\"http://open-services.net/ns/cm#\"\n    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n    xmlns:rtc_ext=\"http://jazz.net/xmlns/prod/jazz/rtc/ext/1.0/\"\n    xmlns:oslc_cmx=\"http://open-services.net/ns/cm-x#\"\n    xmlns:process=\"http://jazz.net/ns/process#\"\n    xmlns:acp=\"http://jazz.net/ns/acp#\"\n    xmlns:rtc_cm=\"http://jazz.net/xmlns/prod/jazz/rtc/cm/1.0/\"\n    xmlns:oslc=\"http://open-services.net/ns/core#\"\n    xmlns:oslc_pl=\"http://open-services.net/ns/pl#\" >\n<oslc_cm:changerequest>\n    <dcterms:description rdf:parseType=\"Literal\">{{payload}}</dcterms:description> \n    <oslc:shortTitle rdf:parseType=\"Literal\">{{topic}} {{date}}</oslc:shortTitle>\n    <dcterms:title rdf:parseType=\"Literal\">{{topic}} {{date}}</dcterms:title>\n    <dcterms:subject rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">JLD subject</dcterms:subject>\n </oslc_cm:changerequest>\n</rdf:RDF>",
+        "x": 705.071533203125,
+        "y": 140,
+        "wires": [
+            [
+                "ed0dfce7.12f2"
+            ]
+        ]
+    },
+    {
+        "id": "cc417610.33be88",
+        "type": "http request",
+        "z": "2a61782f.d59e88",
+        "name": "InvokeMxCreateServiceRequest",
+        "method": "POST",
+        "ret": "txt",
+        "url": "http://MAXIMO_SERVER/maximo/oslc/os/mxsr",
+        "x": 810.6907348632812,
+        "y": 429.0317687988281,
+        "wires": [
+            [
+                "ce9d94f8.316268"
+            ]
+        ]
+    },
+    {
+        "id": "8bab86c8.745478",
+        "type": "function",
+        "z": "2a61782f.d59e88",
+        "name": "Headers",
+        "func": "msg.headers = {\n\"maxauth\":\"d2lsc29uOndpbHNvbg==\",\n\"content-type\":\"application/json\"\n}\nreturn msg;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 521.2938385009766,
+        "y": 417.6825113296509,
+        "wires": [
+            [
+                "f542b958.0abd48"
+            ]
+        ]
+    },
+    {
+        "id": "fdab0aa1.0254f8",
+        "type": "comment",
+        "z": "2a61782f.d59e88",
+        "name": "Create RTC work items automaticly from RTI alerts",
+        "info": "",
+        "x": 859.071533203125,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e7e63811.1819c8",
+        "type": "comment",
+        "z": "2a61782f.d59e88",
+        "name": "Create Maximo service requests automaticly from RTI alerts",
+        "info": "",
+        "x": 831.6430053710938,
+        "y": 290.4285583496094,
+        "wires": []
+    },
+    {
+        "id": "ce9d94f8.316268",
+        "type": "debug",
+        "z": "2a61782f.d59e88",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 1020.2144775390625,
+        "y": 363.1428527832031,
+        "wires": []
+    },
+    {
+        "id": "f542b958.0abd48",
+        "type": "template",
+        "z": "2a61782f.d59e88",
+        "name": "JSON Payload",
+        "field": "payload",
+        "format": "json",
+        "template": "{\n\"spi:description\":\"{{topic}} {{date}}\",\n\"spi:description_longdescription\":\"{{payload}}\",\n\"spi:reportedby\":\"RTI Alerts\",\n\"spi:assetsiteid\":\"BEDFORD\",\n\"spi:assetnum\":\"B827EB391A7A\",\n\"spi:class\":\"SR\",\n\"spi:status\":\"NEW\"\n}",
+        "x": 627.5001831054688,
+        "y": 347.5714111328125,
+        "wires": [
+            [
+                "cc417610.33be88"
+            ]
+        ]
+    },
+    {
+        "id": "a733d920.58cc28",
+        "type": "http response",
+        "z": "2a61782f.d59e88",
+        "name": "",
+        "x": 1041.071533203125,
+        "y": 242,
+        "wires": []
+    },
+    {
+        "id": "d6376ad.f29c898",
+        "type": "switch",
+        "z": "2a61782f.d59e88",
+        "name": "",
+        "property": "payload",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "-1"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 298.6429214477539,
+        "y": 469.5714101791382,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "8a7770.ff75889",
+        "type": "function",
+        "z": "2a61782f.d59e88",
+        "name": "Enable Alerts",
+        "func": "context.global.alertsActive = true;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 300.5387191772461,
+        "y": 517.3967561721802,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fafb3fe2.0504c",
+        "type": "inject",
+        "z": "2a61782f.d59e88",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 90.53874969482422,
+        "y": 518.3968165774406,
+        "wires": [
+            [
+                "8a7770.ff75889"
+            ]
+        ]
+    },
+    {
+        "id": "79ff9712.860068",
+        "type": "function",
+        "z": "2a61782f.d59e88",
+        "name": "Check Alerts",
+        "func": "if (!context.global.alertsActive)\n    msg.payload = -1\nelse\n    context.global.alertsActive=false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 197.96731567382812,
+        "y": 374.5396728515625,
+        "wires": [
+            [
+                "d6376ad.f29c898"
+            ]
+        ]
+    },
+    {
+        "id": "6a9e3a6b.9561c4",
+        "type": "html",
+        "z": "2a61782f.d59e88",
+        "name": "Convert to text",
+        "tag": "p",
+        "ret": "text",
+        "as": "single",
+        "x": 136.3957977294922,
+        "y": 196.6191864013672,
+        "wires": [
+            [
+                "25747b1b.da8b84"
+            ]
+        ]
+    },
+    {
+        "id": "25747b1b.da8b84",
+        "type": "function",
+        "z": "2a61782f.d59e88",
+        "name": "Join Messages",
+        "func": "\nmsg.payload = msg.payload.join('\\n');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 242.11011505126953,
+        "y": 302.0477056503296,
+        "wires": [
+            [
+                "95db0543.6a24f8",
+                "8bab86c8.745478",
+                "ed2dcf07.12d23"
+            ]
+        ]
+    },
+    {
+        "id": "ed2dcf07.12d23",
+        "type": "debug",
+        "z": "2a61782f.d59e88",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 518.2530288696289,
+        "y": 497.74603939056396,
+        "wires": []
+    },
+    {
+        "id": "f30637a2.0cf9c8",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 693,
+        "y": 1248,
+        "wires": []
+    },
+    {
+        "id": "3bd72b17.c428d4",
+        "type": "ibmiot in",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "inputType": "evt",
+        "deviceId": "",
+        "applicationId": "",
+        "deviceType": "SmartSolarBattery",
+        "eventType": "status",
+        "commandType": "",
+        "format": "json",
+        "name": "status",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": "",
+        "allEvents": "",
+        "allCommands": "",
+        "allFormats": false,
+        "x": 182,
+        "y": 60,
+        "wires": [
+            [
+                "3e19ef07.c1e61",
+                "526e98d.e050b68"
+            ]
+        ]
+    },
+    {
+        "id": "e9de0598.1621f8",
+        "type": "ibmiot in",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "inputType": "evt",
+        "deviceId": "",
+        "applicationId": "",
+        "deviceType": "SmartSolarBattery",
+        "eventType": "batteryCharge",
+        "commandType": "",
+        "format": "json",
+        "name": "batteryCharge",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": "",
+        "allEvents": "",
+        "allCommands": "",
+        "allFormats": "",
+        "x": 187,
+        "y": 137,
+        "wires": [
+            [
+                "b40789b2.4bf878"
+            ]
+        ]
+    },
+    {
+        "id": "25ee9c6.fda1164",
+        "type": "ibmiot in",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "inputType": "evt",
+        "deviceId": "",
+        "applicationId": "",
+        "deviceType": "SmartSolarBattery",
+        "eventType": "logData",
+        "commandType": "",
+        "format": "json",
+        "name": "logData",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": "",
+        "allEvents": "",
+        "allCommands": "",
+        "allFormats": "",
+        "x": 145,
+        "y": 1122,
+        "wires": [
+            [
+                "2c47e513.d3b81a",
+                "f30637a2.0cf9c8",
+                "a00e7c46.5ff18",
+                "a52efa6e.1d34b8"
+            ]
+        ]
+    },
+    {
+        "id": "55c5d345.aa3a2c",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "3",
+        "func": "if (msg.payload.solarCurrent < 0) {\n    msg.payload.solarCurrent = -msg.payload.solarCurrent; \n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 531,
+        "y": 1761,
+        "wires": [
+            [
+                "9835557.f67caa8"
+            ]
+        ]
+    },
+    {
+        "id": "bd04b132.42fb5",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 409,
+        "y": 1821,
+        "wires": [
+            [
+                "55c5d345.aa3a2c"
+            ]
+        ]
+    },
+    {
+        "id": "c4ef3b1.f3b10c8",
+        "type": "ibmiot out",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "outputType": "evt",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "turnOff",
+        "format": "json",
+        "data": "0",
+        "name": "TurnOff",
+        "service": "registered",
+        "x": 755,
+        "y": 333,
+        "wires": []
+    },
+    {
+        "id": "bc9fc9fc.436038",
+        "type": "ibmiot out",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "outputType": "evt",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "turnOn",
+        "format": "json",
+        "data": "0",
+        "name": "TurnOn",
+        "service": "registered",
+        "x": 744,
+        "y": 157,
+        "wires": []
+    },
+    {
+        "id": "7ee44b59.811bb4",
+        "type": "http in",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "url": "/TurnOn",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 228,
+        "y": 247,
+        "wires": [
+            [
+                "46c80ba8.b937f4",
+                "1abb026b.e544fe",
+                "4da5b1f7.b25a5"
+            ]
+        ]
+    },
+    {
+        "id": "1494766e.eb6b8a",
+        "type": "http in",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "url": "/TurnOff",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 230,
+        "y": 323,
+        "wires": [
+            [
+                "46c80ba8.b937f4",
+                "1abb026b.e544fe",
+                "3f13aa86.c0ec56"
+            ]
+        ]
+    },
+    {
+        "id": "72819d9f.8d7e64",
+        "type": "http in",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "url": "/SetPowerMode",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 220,
+        "y": 411,
+        "wires": [
+            [
+                "1abb026b.e544fe",
+                "46c80ba8.b937f4",
+                "7f175905.80e8a8",
+                "835c8ac5.2b22b"
+            ]
+        ]
+    },
+    {
+        "id": "7f175905.80e8a8",
+        "type": "json",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 584,
+        "y": 404,
+        "wires": [
+            [
+                "8c404e80.73bfb"
+            ]
+        ]
+    },
+    {
+        "id": "3f13aa86.c0ec56",
+        "type": "json",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 587,
+        "y": 327,
+        "wires": [
+            [
+                "c4ef3b1.f3b10c8"
+            ]
+        ]
+    },
+    {
+        "id": "4da5b1f7.b25a5",
+        "type": "json",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "x": 544,
+        "y": 178,
+        "wires": [
+            [
+                "bc9fc9fc.436038"
+            ]
+        ]
+    },
+    {
+        "id": "8c404e80.73bfb",
+        "type": "ibmiot out",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "outputType": "cmd",
+        "deviceId": "0",
+        "deviceType": "SmartHomeSolarBattery",
+        "eventCommandType": "SetPowerMode",
+        "format": "json",
+        "data": "0",
+        "name": "SetPowerMode",
+        "service": "registered",
+        "x": 759,
+        "y": 402,
+        "wires": []
+    },
+    {
+        "id": "8caa23f2.7355e",
+        "type": "ibmiot out",
+        "z": "d30fc745.2cf038",
+        "authentication": "apiKey",
+        "apiKey": "4aabaa3f.b55454",
+        "outputType": "cmd",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "setPowerMode",
+        "format": "json",
+        "data": "0",
+        "name": "IBM IoT App Out",
+        "service": "registered",
+        "x": 1018,
+        "y": 464,
+        "wires": []
+    },
+    {
+        "id": "f0c3d0f3.0f3c3",
+        "type": "ibmiot out",
+        "z": "d30fc745.2cf038",
+        "authentication": "apiKey",
+        "apiKey": "4aabaa3f.b55454",
+        "outputType": "cmd",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "setPowerMode",
+        "format": "json",
+        "data": "0",
+        "name": "setPowerMode",
+        "service": "registered",
+        "x": 949,
+        "y": 609,
+        "wires": []
+    },
+    {
+        "id": "fc915c93.036ea",
+        "type": "ibmiot out",
+        "z": "d30fc745.2cf038",
+        "authentication": "apiKey",
+        "apiKey": "4aabaa3f.b55454",
+        "outputType": "cmd",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "turnOn",
+        "format": "json",
+        "data": "0",
+        "name": "turnOn",
+        "service": "registered",
+        "x": 835,
+        "y": 248,
+        "wires": []
+    },
+    {
+        "id": "8ca407c5.735bf8",
+        "type": "ibmiot out",
+        "z": "d30fc745.2cf038",
+        "authentication": "apiKey",
+        "apiKey": "4aabaa3f.b55454",
+        "outputType": "cmd",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "turnOff",
+        "format": "json",
+        "data": "0",
+        "name": "turnOff",
+        "service": "registered",
+        "x": 959,
+        "y": 363,
+        "wires": []
+    },
+    {
+        "id": "a00e7c46.5ff18",
+        "type": "function",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "func": "if (typeof(msg.payload.d) != 'undefined') {\n    msg.payload = msg.payload.d;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 383,
+        "y": 1113,
+        "wires": [
+            [
+                "71fa6878.8e0598"
+            ]
+        ]
+    },
+    {
+        "id": "4b7462d3.b48b9c",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 578,
+        "y": 249,
+        "wires": []
+    },
+    {
+        "id": "3763ac79.c89c54",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "Add deviceId",
+        "func": "msg = {deviceId: msg.payload.deviceId,\n    payload: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 357,
+        "y": 339,
+        "wires": [
+            [
+                "29110a9f.d6eef6"
+            ]
+        ]
+    },
+    {
+        "id": "bba4d746.445b28",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "Add deviceId",
+        "func": "msg = {deviceId: msg.payload.deviceId,\n    payload: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 417,
+        "y": 423,
+        "wires": [
+            [
+                "543a33ee.abc5cc"
+            ]
+        ]
+    },
+    {
+        "id": "aa0abb8a.55f548",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "Add deviceId",
+        "func": "msg = {deviceId: msg.payload.deviceId,\n    payload: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 423,
+        "y": 607,
+        "wires": [
+            [
+                "a2612ec7.5d9ed"
+            ]
+        ]
+    },
+    {
+        "id": "260a262a.d9f5da",
+        "type": "function",
+        "z": "d30fc745.2cf038",
+        "name": "Add deviceId",
+        "func": "msg = {deviceId: msg.payload.deviceId,\n    payload: msg.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 397,
+        "y": 125,
+        "wires": [
+            [
+                "cf3abe47.30c54"
+            ]
+        ]
+    },
+    {
+        "id": "c3ff5a3c.3c00a8",
+        "type": "ibmiot in",
+        "z": "3cc84ecb.c337b2",
+        "authentication": "apiKey",
+        "apiKey": "93d60a50.6c29f8",
+        "inputType": "evt",
+        "deviceId": "",
+        "applicationId": "",
+        "deviceType": "SmartSolarBattery",
+        "eventType": "getForecast",
+        "commandType": "",
+        "format": "json",
+        "name": "getForecast",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": "",
+        "allEvents": "",
+        "allCommands": "",
+        "allFormats": "",
+        "x": 85,
+        "y": 127,
+        "wires": [
+            [
+                "beee407f.36862",
+                "909df8e5.982d7"
+            ]
+        ]
+    },
+    {
+        "id": "d9364545.26c9b8",
+        "type": "ibmiot out",
+        "z": "3cc84ecb.c337b2",
+        "authentication": "apiKey",
+        "apiKey": "93d60a50.6c29f8",
+        "outputType": "cmd",
+        "deviceId": "0",
+        "deviceType": "SmartSolarBattery",
+        "eventCommandType": "setForecast",
+        "format": "json",
+        "data": "0",
+        "name": "setForecast",
+        "service": "registered",
+        "x": 770,
+        "y": 529,
+        "wires": []
+    },
+    {
+        "id": "b536eecc.4ac91",
+        "type": "json",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "x": 771,
+        "y": 350,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "44cf7826.bb3088",
+        "type": "http request",
+        "z": "3cc84ecb.c337b2",
+        "name": "Get Weather Forecast",
+        "method": "GET",
+        "ret": "obj",
+        "url": "https://693cef1e-9d90-4a8a-8168-d35378cb69f8:vf3KAU1Qq5@twcservice.mybluemix.net:443/api/weather/v1/geocode/{{payload.latitude}}/{{payload.longitude}}/forecast/daily/10day.json?units=m&language=en-AU",
+        "tls": "",
+        "x": 419,
+        "y": 176,
+        "wires": [
+            [
+                "e3f88806.9c24a8"
+            ]
+        ]
+    },
+    {
+        "id": "1e69fccf.e19603",
+        "type": "json",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "x": 766,
+        "y": 103.00000762939453,
+        "wires": [
+            [
+                "56214547.443724"
+            ]
+        ]
+    },
+    {
+        "id": "ff0a415a.00f5c",
+        "type": "function",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "func": "msg.payload.currentCond = msg.payload.currentCond.replace(\"&\",\" and \");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 721,
+        "y": 362,
+        "wires": [
+            [
+                "5aa9fc86.a55604"
+            ]
+        ]
+    },
+    {
+        "id": "5aa9fc86.a55604",
+        "type": "json",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "x": 753,
+        "y": 445,
+        "wires": [
+            [
+                "d9364545.26c9b8"
+            ]
+        ]
+    },
+    {
+        "id": "fbccf236.b55d8",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 264,
+        "y": 506,
+        "wires": []
+    },
+    {
+        "id": "a52efa6e.1d34b8",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 298,
+        "y": 1198,
+        "wires": []
+    },
+    {
+        "id": "4587b28f.65985c",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 358,
+        "y": 816,
+        "wires": []
+    },
+    {
+        "id": "99552587.056e9",
+        "type": "inject",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 105,
+        "y": 368,
+        "wires": [
+            [
+                "7f175905.80e8a8"
+            ]
+        ]
+    },
+    {
+        "id": "526e98d.e050b68",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 392,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "e3f88806.9c24a8",
+        "type": "function",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "func": "context.global.narrative = msg.payload.forecasts[0].narrative;\nmsg.payload = {'narrative' : context.global.narrative, 'latitude':context.global.lat,'longitude':context.global.lon};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 678,
+        "y": 163,
+        "wires": [
+            [
+                "56214547.443724",
+                "5c158864.9b2a"
+            ]
+        ]
+    },
+    {
+        "id": "9476fbfc.339688",
+        "type": "debug",
+        "z": "d30fc745.2cf038",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 497,
+        "y": 754,
+        "wires": []
+    },
+    {
+        "id": "ccf5c07c.fcde3",
+        "type": "function",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "func": "msg.payload = { 'narrative': context.global.narrative,\n                'temp': msg.payload.observation.temp,\n                'wx_phrase' : msg.payload.observation.wx_phrase,\n                'sky_cover' : msg.payload.observation.sky_cover};\n                \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 539,
+        "y": 37.00000762939453,
+        "wires": [
+            [
+                "b6b1f141.494e1"
+            ]
+        ]
+    },
+    {
+        "id": "beee407f.36862",
+        "type": "function",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "func": "context.global.lat = Math.round(msg.payload.latitude*100)/100;\ncontext.global.lon = Math.round(msg.payload.longitude*100)/100;\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 247.00001525878906,
+        "y": 127,
+        "wires": [
+            [
+                "44cf7826.bb3088",
+                "b0fccea9.42ae9"
+            ]
+        ]
+    },
+    {
+        "id": "277ada01.14c316",
+        "type": "ibmiot in",
+        "z": "daf7bcf.1912cc",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "inputType": "evt",
+        "deviceId": "",
+        "applicationId": "",
+        "deviceType": "SMARTSOLARBATTERY",
+        "eventType": "logData",
+        "commandType": "",
+        "format": "json",
+        "name": "IBM IoT App In",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": true,
+        "allEvents": false,
+        "allCommands": "",
+        "allFormats": "",
+        "x": 258,
+        "y": 203,
+        "wires": [
+            [
+                "8fc9058.61bedf8",
+                "c357f7c3.93db28"
+            ]
+        ]
+    },
+    {
+        "id": "8fc9058.61bedf8",
+        "type": "debug",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 485,
+        "y": 176,
+        "wires": []
+    },
+    {
+        "id": "c357f7c3.93db28",
+        "type": "function",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "func": "context.global.solarBusVoltage = msg.payload.d.solarBusVoltage;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 473,
+        "y": 243,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9895f673.a8c02",
+        "type": "http in",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "url": "/solarBusVoltage",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 264,
+        "y": 319,
+        "wires": [
+            [
+                "b81751ac.076958"
+            ]
+        ]
+    },
+    {
+        "id": "b81751ac.076958",
+        "type": "function",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "func": "msg.payload.solarBusVoltage = context.global.solarBusVoltage;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 469,
+        "y": 326,
+        "wires": [
+            [
+                "56e6d91a.5bbcc8"
+            ]
+        ]
+    },
+    {
+        "id": "56e6d91a.5bbcc8",
+        "type": "template",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.solarBusVoltage}}",
+        "x": 633,
+        "y": 350,
+        "wires": [
+            [
+                "fa28e1cb.c7779"
+            ]
+        ]
+    },
+    {
+        "id": "fa28e1cb.c7779",
+        "type": "http response",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "x": 791,
+        "y": 325,
+        "wires": []
+    },
+    {
+        "id": "7462803d.83bc38",
+        "type": "template",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>Weather Display</title>\n  <link rel=\"stylesheet\" href=\"//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css\">\n  <script src=\"//code.jquery.com/jquery-1.10.2.js\"></script>\n  <script src=\"//code.jquery.com/ui/1.11.4/jquery-ui.js\"></script>\n </head>\n \n <body>\n\t<div class=\"dGauge-group\" style=\"text-align:center\">\n\t    <H2><div class=\"gauges\">Solar Voltage</div></H2>\n\t    <table align=\"center\">\n\t        <tr>\n\t            <td id=\"t02chart\" ></td>\n\t        </tr>\t        \n\t   </table>\n\t</div>\n\n<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>  \n<script>\n\nvar Value = 0;\n\n      google.load(\"visualization\", \"1\", {packages:[\"gauge\"]});\n      google.setOnLoadCallback(drawChart);\n      function drawChart() {\n\n        var t02data = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Volts', 0]\n        ]);\n        \n        var t02Options = {\n          width: 400, height: 200,\n          min: 0, max: 6,\n          majorTicks: [\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"],\n          minorTicks: 5\n        };\n        \n  \n        var t02chart = new google.visualization.Gauge(document.getElementById('t02chart'));\n        var t02value;\n\n        t02chart.draw(t02data, t02Options);\n   \n        setInterval(function() {\n          $.get((\"/solarBusVoltage\"), function(data){t02value = data;});\n          t02data.setValue(0, 1, t02value);\n          t02chart.draw(t02data, t02Options);\n        }, 2000);\n      }\n      \n  </script>\n\n</body>\n</html>",
+        "x": 468.5,
+        "y": 108.5,
+        "wires": [
+            [
+                "db9f10f4.18ca58"
+            ]
+        ]
+    },
+    {
+        "id": "33cec86d.fcbe1",
+        "type": "http in",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "url": "/ui",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 251.5,
+        "y": 109.5,
+        "wires": [
+            [
+                "7462803d.83bc38"
+            ]
+        ]
+    },
+    {
+        "id": "db9f10f4.18ca58",
+        "type": "http response",
+        "z": "daf7bcf.1912cc",
+        "name": "",
+        "x": 657.5,
+        "y": 110,
+        "wires": []
+    },
+    {
+        "id": "fd8be121.867d28",
+        "type": "ibmiot in",
+        "z": "a0bb3ad.984afc8",
+        "authentication": "apiKey",
+        "apiKey": "1490ab03.9d0d2d",
+        "inputType": "evt",
+        "deviceId": "b0b448b88285",
+        "applicationId": "",
+        "deviceType": "+",
+        "eventType": "+",
+        "commandType": "",
+        "format": "json",
+        "name": "IBM IoT",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": true,
+        "allEvents": true,
+        "allCommands": "",
+        "allFormats": "",
+        "x": 93,
+        "y": 259.5,
+        "wires": [
+            [
+                "70c2302c.e19918",
+                "a00fa800.272e98"
+            ]
+        ]
+    },
+    {
+        "id": "69d757bb.1ca2b8",
+        "type": "template",
+        "z": "a0bb3ad.984afc8",
+        "name": "HTML for measurements page",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>IBM SensorTag Demo</title>\n  <link rel=\"stylesheet\" href=\"//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css\">\n  <script src=\"//code.jquery.com/jquery-1.10.2.js\"></script>\n  <script src=\"//code.jquery.com/ui/1.11.4/jquery-ui.js\"></script>\n </head>\n \n <body>\n\n\t<div class=\"dGauge-group\" style=\"text-align:center\">\n\t   <H2>Live Readings</H2>\n\t    <table align=\"center\">\n\t        <tr>\n\t            <td id=\"vchart\" ></td>\n\t            <td id=\"hchart\" ></td>\n\t        </tr>\n\t   </table>\n\t</div>\n\n\n<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>  \n<script>\n\nvar vValue = 0;\nvar hValue = 0;\n\n      google.load(\"visualization\", \"1\", {packages:[\"gauge\"]});\n      google.setOnLoadCallback(drawChart);\n      function drawChart() {\n\n        var vdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Temp', 0]\n        ]);\n        \n\n        var vOptions = {\n          width: 400, height: 200,\n          min: 0, max: 50  ,\n          redFrom: 40, redTo:50,\n          yellowFrom: 27, yellowTo:40,\n          greenFrom:22, greenTo:27,\n          majorTicks: [\"0\",\"\",\"10\",\"\",\"20\",\"\",\"30\",\"\",\"40\",\"\",\"50\"],\n          minorTicks: 5\n        };\n        \n        var vchart = new google.visualization.Gauge(document.getElementById('vchart'));\n\n        vchart.draw(vdata, vOptions);\n\n        var hdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Humidity', 0]\n        ]);\n        \n\n        var hOptions = {\n          width: 400, height: 200,\n          min: 0, max: 100  ,\n          redFrom: 90, redTo: 100,\n          yellowFrom: 80, yellowTo:90,\n          greenFrom: 25, greenTo:80,\n          majorTicks: [\"0\",\"\",\"20\",\"\",\"40\",\"\",\"60\",\"\",\"80\",\"\",\"100\"],\n          minorTicks: 5\n        };\n        \n        var hchart = new google.visualization.Gauge(document.getElementById('hchart'));\n\n        hchart.draw(hdata, hOptions);\n\n        setInterval(function() {\n          $.get((\"/temperature\"), function(data){vValue = data;});\n          vdata.setValue(0, 1, vValue);\n          vchart.draw(vdata, vOptions);\n          $.get((\"/humidity\"), function(data){hValue = data;});\n          hdata.setValue(0, 1, hValue);\n          hchart.draw(hdata, hOptions);\n        }, 1000);\n      }\n      \n  </script>\n\n</body>\n</html>",
+        "x": 404.5,
+        "y": 174,
+        "wires": [
+            [
+                "dc26a803.c31c08"
+            ]
+        ]
+    },
+    {
+        "id": "dc26a803.c31c08",
+        "type": "http response",
+        "z": "a0bb3ad.984afc8",
+        "name": "",
+        "x": 625,
+        "y": 173,
+        "wires": []
+    },
+    {
+        "id": "4d321119.749e2",
+        "type": "http in",
+        "z": "a0bb3ad.984afc8",
+        "name": "/measurements URL",
+        "url": "/measurements",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 118,
+        "y": 178.5,
+        "wires": [
+            [
+                "69d757bb.1ca2b8"
+            ]
+        ]
+    },
+    {
+        "id": "70c2302c.e19918",
+        "type": "function",
+        "z": "a0bb3ad.984afc8",
+        "name": "Store Data",
+        "func": "//if (!!msg.payload.d.Flow) {\n    context.global.flow = msg.payload.d.Flow;\n//}\nif (!!msg.payload.d.Temperature) {    \ncontext.global.light = msg.payload.d.Temperature;\ncontext.global.humidity = msg.payload.d.Humidity;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 308,
+        "y": 250.5,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b860a3b9.13e6f",
+        "type": "http response",
+        "z": "a0bb3ad.984afc8",
+        "name": "",
+        "x": 830.5,
+        "y": 335,
+        "wires": []
+    },
+    {
+        "id": "3fc63aea.634b6e",
+        "type": "template",
+        "z": "a0bb3ad.984afc8",
+        "name": "Format Result",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.light}}",
+        "x": 619.5,
+        "y": 381.33331298828125,
+        "wires": [
+            [
+                "b860a3b9.13e6f"
+            ]
+        ]
+    },
+    {
+        "id": "2a9438a6.e6f2",
+        "type": "function",
+        "z": "a0bb3ad.984afc8",
+        "name": "Extract Light Data",
+        "func": "msg.payload = {'light' : context.global.light};\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 385.5,
+        "y": 388.33331298828125,
+        "wires": [
+            [
+                "3fc63aea.634b6e"
+            ]
+        ]
+    },
+    {
+        "id": "6096ce78.61b588",
+        "type": "http in",
+        "z": "a0bb3ad.984afc8",
+        "name": "/temperature URL",
+        "url": "/temperature",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 120.5,
+        "y": 418,
+        "wires": [
+            [
+                "2a9438a6.e6f2"
+            ]
+        ]
+    },
+    {
+        "id": "a00fa800.272e98",
+        "type": "debug",
+        "z": "a0bb3ad.984afc8",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 257,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "80c2ee5c.3ce4d8",
+        "type": "function",
+        "z": "a0bb3ad.984afc8",
+        "name": "Extract Humidity Data",
+        "func": "msg.payload = {'humidity' : context.global.humidity};\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 395.5,
+        "y": 437,
+        "wires": [
+            [
+                "e264b2d1.613d3"
+            ]
+        ]
+    },
+    {
+        "id": "e264b2d1.613d3",
+        "type": "template",
+        "z": "a0bb3ad.984afc8",
+        "name": "Format Result",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.humidity}}",
+        "x": 621.5,
+        "y": 434,
+        "wires": [
+            [
+                "443a2006.e73a28"
+            ]
+        ]
+    },
+    {
+        "id": "8fe57f2b.b86b58",
+        "type": "http in",
+        "z": "a0bb3ad.984afc8",
+        "name": "/humidity URL",
+        "url": "/humidity",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 140.5,
+        "y": 459.66668701171875,
+        "wires": [
+            [
+                "80c2ee5c.3ce4d8"
+            ]
+        ]
+    },
+    {
+        "id": "443a2006.e73a28",
+        "type": "http response",
+        "z": "a0bb3ad.984afc8",
+        "name": "",
+        "x": 834.5,
+        "y": 429.66668701171875,
+        "wires": []
+    },
+    {
+        "id": "9974c4a6.f45a5",
+        "type": "function",
+        "z": "a0bb3ad.984afc8",
+        "name": "Extract flow Data",
+        "func": "msg.payload = {'flow' : context.global.flow};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370.5,
+        "y": 484,
+        "wires": [
+            [
+                "61201e35.3ef87"
+            ]
+        ]
+    },
+    {
+        "id": "61201e35.3ef87",
+        "type": "template",
+        "z": "a0bb3ad.984afc8",
+        "name": "Format Result",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload.flow}}",
+        "x": 606.5,
+        "y": 481,
+        "wires": [
+            [
+                "71dd534b.75a804"
+            ]
+        ]
+    },
+    {
+        "id": "f4902fc4.9bcbc",
+        "type": "http in",
+        "z": "a0bb3ad.984afc8",
+        "name": "/flow URL",
+        "url": "/flow",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 115.5,
+        "y": 506.66668701171875,
+        "wires": [
+            [
+                "9974c4a6.f45a5"
+            ]
+        ]
+    },
+    {
+        "id": "71dd534b.75a804",
+        "type": "http response",
+        "z": "a0bb3ad.984afc8",
+        "name": "",
+        "x": 819.5,
+        "y": 476.66668701171875,
+        "wires": []
+    },
+    {
+        "id": "7980fbd3.f3898c",
+        "type": "template",
+        "z": "a0bb3ad.984afc8",
+        "name": "HTML for measureflow page",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>Watson IoT Platform Demo</title>\n  <link rel=\"stylesheet\" href=\"//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css\">\n  <script src=\"//code.jquery.com/jquery-1.10.2.js\"></script>\n  <script src=\"//code.jquery.com/ui/1.11.4/jquery-ui.js\"></script>\n </head>\n \n <body>\n\n\t<div class=\"dGauge-group\" style=\"text-align:center\">\n\t   <H2>Live Flow Reporting</H2>\n\t    <table align=\"center\">\n\t        <tr>\n\t            <td id=\"vchart\" ></td>\n\t            <td><img id=\"Can\" src=\"https://thumbs.dreamstime.com/t/watering-can-pouring-water-d-illustration-41282869.jpg\">\n</td>\n\t        </tr>\n\t   </table>\n\t</div>\n\n<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>  \n<script>\n\n\nfunction setImageVisible(id, visible) {\n    var img = document.getElementById(id);\n    img.style.visibility = (visible ? 'visible' : 'hidden');\n}\n\nsetImageVisible('Can', false);\n\nvar vValue = 0;\n\n      google.load(\"visualization\", \"1\", {packages:[\"gauge\"]});\n      google.setOnLoadCallback(drawChart);\n      function drawChart() {\n\n        var vdata = google.visualization.arrayToDataTable([\n          ['Label', 'Value'],\n          ['Flow', 0]\n        ]);\n        \n\n        var vOptions = {\n          width: 400, height: 200,\n          min: 0, max: 600  ,\n          redFrom: 400, redTo:600,\n          yellowFrom: 200, yellowTo:400,\n          greenFrom:20, greenTo:200,\n          majorTicks: [\"0\",\"\",\"100\",\"\",\"200\",\"\",\"300\",\"\",\"400\",\"\",\"500\",\"\",\"600\"],\n          minorTicks: 5\n        };\n        \n        var vchart = new google.visualization.Gauge(document.getElementById('vchart'));\n\n        vchart.draw(vdata, vOptions);\n\n\n        setInterval(function() {\n          $.get((\"/flow\"), function(data){vValue = data;});\n          vdata.setValue(0, 1, vValue);\n          vchart.draw(vdata, vOptions);\n          setImageVisible('Can', vValue > 0);\n        }, 1000);\n      }\n      \n  </script>\n\n</body>\n</html>",
+        "x": 389.5,
+        "y": 111,
+        "wires": [
+            [
+                "355f6bdb.5bcf5c"
+            ]
+        ]
+    },
+    {
+        "id": "355f6bdb.5bcf5c",
+        "type": "http response",
+        "z": "a0bb3ad.984afc8",
+        "name": "",
+        "x": 620,
+        "y": 110,
+        "wires": []
+    },
+    {
+        "id": "b3759c01.195c78",
+        "type": "http in",
+        "z": "a0bb3ad.984afc8",
+        "name": "/measureflow URL",
+        "url": "/measureflow",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 113,
+        "y": 115.5,
+        "wires": [
+            [
+                "7980fbd3.f3898c"
+            ]
+        ]
+    },
+    {
+        "id": "b0fccea9.42ae9",
+        "type": "http request",
+        "z": "3cc84ecb.c337b2",
+        "name": "Get Weather Obs",
+        "method": "GET",
+        "ret": "obj",
+        "url": "https://693cef1e-9d90-4a8a-8168-d35378cb69f8:vf3KAU1Qq5@twcservice.mybluemix.net:443/api/weather/v1/geocode/{{payload.latitude}}/{{payload.longitude}}/observations.json?units=m&language=en-AU",
+        "tls": "",
+        "x": 361.2833251953125,
+        "y": 36.28333282470703,
+        "wires": [
+            [
+                "ccf5c07c.fcde3",
+                "6191be41.abc47"
+            ]
+        ]
+    },
+    {
+        "id": "56214547.443724",
+        "type": "join",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "timeout": "",
+        "count": "2",
+        "x": 608.066650390625,
+        "y": 301.1166687011719,
+        "wires": [
+            [
+                "ff0a415a.00f5c"
+            ]
+        ]
+    },
+    {
+        "id": "8834ba9.0100548",
+        "type": "ibmiot in",
+        "z": "b235842d.4dca78",
+        "authentication": "apiKey",
+        "apiKey": "4f122a7a.b0edd4",
+        "inputType": "evt",
+        "deviceId": "",
+        "applicationId": "",
+        "deviceType": "+",
+        "eventType": "+",
+        "commandType": "",
+        "format": "json",
+        "name": "IBM IoT",
+        "service": "registered",
+        "allDevices": true,
+        "allApplications": "",
+        "allDeviceTypes": true,
+        "allEvents": true,
+        "allCommands": "",
+        "allFormats": true,
+        "qos": 0,
+        "x": 265.23333740234375,
+        "y": 509.3000183105469,
+        "wires": [
+            [
+                "9d47b062.93a35"
+            ]
+        ]
+    },
+    {
+        "id": "9d47b062.93a35",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 417.2333679199219,
+        "y": 515.8333435058594,
+        "wires": []
+    },
+    {
+        "id": "835c8ac5.2b22b",
+        "type": "debug",
+        "z": "b235842d.4dca78",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 834.5,
+        "y": 491,
+        "wires": []
+    },
+    {
+        "id": "5c158864.9b2a",
+        "type": "debug",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 604.5,
+        "y": 214.5,
+        "wires": []
+    },
+    {
+        "id": "909df8e5.982d7",
+        "type": "debug",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 216.5,
+        "y": 229.5,
+        "wires": []
+    },
+    {
+        "id": "6191be41.abc47",
+        "type": "debug",
+        "z": "3cc84ecb.c337b2",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 528.5,
+        "y": 108.5,
+        "wires": []
+    }
+]
