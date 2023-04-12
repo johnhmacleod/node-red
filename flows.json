@@ -1,0 +1,562 @@
+[
+    {
+        "id": "dafc1d92.0b50e8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e75a247d.bfb71",
+        "type": "inject",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "ae196915.3f356"
+            ]
+        ]
+    },
+    {
+        "id": "6bf2d6c9.12155",
+        "type": "http in",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "url": "/jsonforecast",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "ae196915.3f356"
+            ]
+        ]
+    },
+    {
+        "id": "461b6d28.b35a6c",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Extract Forecast Elements",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "p[class=date], div[class=\"content forecast\"] ",
+        "ret": "html",
+        "as": "single",
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "1476f239.38e51e"
+            ]
+        ]
+    },
+    {
+        "id": "3747826.5e7097e",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Extract weather",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "p[class=date],h3[class=day],h4[class=warning],p[class=sl]",
+        "ret": "html",
+        "as": "single",
+        "x": 960,
+        "y": 160,
+        "wires": [
+            [
+                "103732d8.77d78d"
+            ]
+        ]
+    },
+    {
+        "id": "1476f239.38e51e",
+        "type": "change",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 160,
+        "wires": [
+            [
+                "3747826.5e7097e"
+            ]
+        ]
+    },
+    {
+        "id": "42733c40.47fb2c",
+        "type": "http response",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1050,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "103732d8.77d78d",
+        "type": "function",
+        "z": "dafc1d92.0b50e8",
+        "name": "Compact",
+        "func": "var abbr = [\n    {i:\"easterly\",o:\"E\"},\n    {i:\"northerly\",o:\"N\"},\n    {i:\"southerly\",o:\"S\"},\n    {i:\"westerly\",o:\"W\"},\n    {i:\"north\",o:\"N\"},\n    {i:\"northeast\",o:\"NE\"},\n    {i:\"northwest\",o:\"NW\"},\n    {i:\"south\",o:\"S\"},\n    {i:\"southeast\",o:\"SE\"},\n    {i:\"southwest\",o:\"SW\"},\n    {i:\"east\",o:\"E\"},\n    {i:\"west\",o:\"W\"},\n    {i:\"northeasterly\",o:\"NE\"},    \n    {i:\"northwesterly\",o:\"NW\"},    \n    {i:\"southeasterly\",o:\"SE\"},    \n    {i:\"southwesterly\",o:\"SW\"},    \n    {i:\"knots\",o:\"kts\"},\n    {i:\"knots.\",o:\"kts.\"},\n    {i:\"knots,\",o:\"kts,\"},\n    {i:\"afternoon\",o:\"arvo\"},\n    {i:\"afternoon,\",o:\"arvo,\"},\n    {i:\"afternoon.\",o:\"arvo.\"},\n    {i:\"mid-afternoon\",o:\"mid-arvo\"},\n    {i:\"mid-afternoon,\",o:\"mid-arvo\"},\n    {i:\"turning\",o:\"trn\"},\n    {i:\"before\",o:\"bef\"},\n    {i:\"change\",o:\"chg\"},\n    {i:\"evening\",o:\"eve\"},\n    {i:\"evening,\",o:\"eve,\"},\n    {i:\"tending\",o:\"tnd\"},\n    {i:\"ahead\",o:\"ahd\"},\n    {i:\"gusty\",o:\"gsty\"},\n    {i:\"northeasterly\",o:\"NE\"},\n    {i:\"shifting\",o:\"shft\"},\n    {i:\"early\",o:\"erly\"},\n    {i:\"easing\",o:\"esng\"},\n    {i:\"evening\",o:\"eve\"},\n    {i:\"midnight\",o:\"mnght\"},\n    {i:\"midnight,\",o:\"mnght,\"},\n    {i:\"evening.\",o:\"eve.\"},\n    {i:\"the\",o:\"\"},\n    {i:\"during\",o:\"in\"},\n    {i:\"below\",o:\"<\"},\n    {i:\"brief\",o:\"brf\"},\n    {i:\"period.\",o:\"prd.\"},\n    {i:\"about\",o:\"~\"},\n    {i:\"from\",o:\"fm\"},\n    {i:\"becoming\",o:\"bcmng\"},\n    {i:\"Variable\",o:\"V'bl\"},\n    {i:\"variable\",o:\"v'bl\"},\n    {i:\"decreasing\",o:\"decr\"},\n    {i:\"morning\",o:\"AM\"},\n    {i:\"morning,\",o:\"AM,\"},\n    {i:\"morning.\",o:\"AM.\"},\n    {i:\"possibly\",o:\"poss\"},\n    {i:\"reaching\",o:\"rchng\"},\n    {i:\"increasing\",o:\"incr\"},\n    {i:\"locally\",o:\"lcly\"},\n    {i:\"middle\",o:\"mid\"},\n    {i:\"around\",o:\"arnd\"},\n    {i:\"through\",o:\"thru\"},\n    {i:\"moving\",o:\"mvng\"},\n    {i:\"hours\",o:\"hrs\"},\n    ]; \nvar warn = \"\";\nfor (var i=1; i<msg.payload.length; i+=2) {\n    if (msg.payload[i+1].includes(\"Gale Warning\")) {\n        warn = \"Gale. \";\n        msg.payload.splice(i+1,1);\n    }\n    else if (msg.payload[i+1].includes(\"Strong Wind Warning\")) {\n        warn = \"Strg Wnd. \";\n        msg.payload.splice(i+1,1);\n    }\n    msg.payload[i] = msg.payload[i].split(\" \")[2] + \" \" + msg.payload[i].split(\" \")[3];\n    msg.payload[i+1] = warn + msg.payload[i+1].split(\" Seas:\")[0].split(\"Winds: \")[1];\n    warn = \"\";\n}\nmsg.payload[0] = msg.payload[0].split(\" \")[2] + msg.payload[0].split(\" \")[3].substr(0,2);\nfor (var p = 0; p<msg.payload.length; p++) {\n    var a = msg.payload[p].split(\" \");\n    for (var ii = 0; ii < a.length; ii++) {\n        for (var j = 0; j<abbr.length; j++) {\n            if (a[ii] == abbr[j].i || a[ii].toLowerCase() == abbr[j].i)\n                a[ii] = abbr[j].o;\n        }\n    }\n    msg.payload[p] = a.join(\" \").replace(/  /g,\" \"); // Remove double spaces\n}\nmsg.payload = {D:msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 900,
+        "y": 220,
+        "wires": [
+            [
+                "42733c40.47fb2c",
+                "b4d0e0d0.7028d",
+                "5ff7090.880fcf8"
+            ]
+        ]
+    },
+    {
+        "id": "ae196915.3f356",
+        "type": "function",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "func": "/* jshint elision: true */\nnow = new Date().getTime();\nif (typeof(context.global.lastFTime)!=='undefined' && (now - context.global.lastFTime) < 600000) {\n    msg.payload = context.global.savedF;\n    return [,msg];\n} else {\nvar ua = [\n    \"Mozilla/5.0 (Linux; Android 10; SM-G977B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.136 Mobile Safari/537.36\",\n    \"Mozilla/5.0 ( compatible )\",\n    \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0\",\n    \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\",\n    \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\"\n    ];\n    \nz = Math.floor(Math.random()*ua.length);\nmsg.headers = {Host: \"www.bom.gov.au\",\n\"User-Agent\": ua[z],\nAccept: \"text/css,*/*;q=0.1\",\n\"Accept-Language\" : \"en-US,en;q=0.5\",\nDNT: 1,\nConnection: \"keep-alive\"\n};\nreturn [msg,];\n}\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "11937685.304699",
+                "16d08506.dc2f7b"
+            ],
+            [
+                "42733c40.47fb2c"
+            ]
+        ]
+    },
+    {
+        "id": "11937685.304699",
+        "type": "http request",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "http://www.bom.gov.au/marine/lite/forecast/sydney-closed-waters.shtml",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 490,
+        "y": 200,
+        "wires": [
+            [
+                "461b6d28.b35a6c"
+            ]
+        ],
+        "info": "http://www.bom.gov.au/marine/lite/forecast/sydney-closed-waters.shtml\nhttp://www.bom.gov.au/marine/lite/forecast/nsw-southern-coastal-districts.shtml"
+    },
+    {
+        "id": "fb84a332.99e1e8",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Syd Hbr",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "th[id=tSYD-station-sydney-harbour] a, td[headers$='tSYD-station-sydney-harbour' ]",
+        "ret": "html",
+        "as": "single",
+        "x": 520,
+        "y": 300,
+        "wires": [
+            [
+                "f9e5854d.14da68"
+            ]
+        ]
+    },
+    {
+        "id": "d6d12d55.28042",
+        "type": "inject",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 108,
+        "y": 320,
+        "wires": [
+            [
+                "e2597824.d623e8"
+            ]
+        ]
+    },
+    {
+        "id": "73f75d88.61743c",
+        "type": "http request",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "http://www.bom.gov.au/nsw/observations/coastal.shtml",
+        "tls": "",
+        "proxy": "",
+        "authType": "",
+        "x": 330,
+        "y": 440,
+        "wires": [
+            [
+                "fb84a332.99e1e8",
+                "3160d519.055732",
+                "a0b06c78.c1844",
+                "5e0da668.930de",
+                "ccab1e70.f1acc8",
+                "c44682f8.d37d38"
+            ]
+        ]
+    },
+    {
+        "id": "e2597824.d623e8",
+        "type": "function",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "func": "/* jshint elision: true */\nnow = new Date().getTime();\nif (typeof(context.global.lastWTime)!=='undefined' && (now - context.global.lastWTime) < 60000) {\n    msg.payload = context.global.savedW;\n    return [,msg];\n} else {\n    var ua = [\n        \"Mozilla/5.0 (Linux; Android 10; SM-G977B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.136 Mobile Safari/537.36\",\n        \"Mozilla/5.0 ( compatible )\",\n        \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0\",\n        \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15\",\n        \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36\"\n        ];\n    z = Math.floor(Math.random()*ua.length);\n    msg.headers = {Host: \"www.bom.gov.au\",\n    \"User-Agent\": ua[z],\n    Accept: \"text/css,*/*;q=0.1\",\n    \"Accept-Language\" : \"en-US,en;q=0.5\",\n    DNT: 1,\n    Connection: \"keep-alive\"\n    };\n    return [msg,];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 330,
+        "y": 560,
+        "wires": [
+            [
+                "73f75d88.61743c",
+                "bd5d1acc.66093"
+            ],
+            [
+                "413522ae.87b8ac",
+                "f6c031aa.0edd7"
+            ]
+        ]
+    },
+    {
+        "id": "3160d519.055732",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Ft Den",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "th[id=tSYD-station-fort-denison] a, td[headers$=tSYD-station-fort-denison]",
+        "ret": "html",
+        "as": "single",
+        "x": 509,
+        "y": 349,
+        "wires": [
+            [
+                "f9e5854d.14da68"
+            ]
+        ]
+    },
+    {
+        "id": "a0b06c78.c1844",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Nth Hd",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "th[id=tSYD-station-north-head] a, td[headers$=tSYD-station-north-head]",
+        "ret": "html",
+        "as": "single",
+        "x": 521,
+        "y": 395,
+        "wires": [
+            [
+                "f9e5854d.14da68"
+            ]
+        ]
+    },
+    {
+        "id": "f9e5854d.14da68",
+        "type": "join",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "6",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 730,
+        "y": 440,
+        "wires": [
+            [
+                "2d026484.a5beb4"
+            ]
+        ]
+    },
+    {
+        "id": "12f167fc.78ed7",
+        "type": "http in",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "url": "/jsontemp",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 480,
+        "wires": [
+            [
+                "e2597824.d623e8",
+                "408ed424.0cd10c"
+            ]
+        ]
+    },
+    {
+        "id": "413522ae.87b8ac",
+        "type": "http response",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "statusCode": "",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 1090,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "2d026484.a5beb4",
+        "type": "function",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "func": "var sh, fd, nh, ap, wo, ki;\nfor (var i = 0; i < 6; i++) {\n    if (msg.payload[i][0] == \"Sydney Harbour\") {\n        sh = i;\n        msg.payload[i][0] = \"Sydney Hbr\";\n    }\n    else if (msg.payload[i][0] == \"Fort Denison\") {\n        fd = i;\n        msg.payload[i][0] = \"Ft Denison\";\n    }\n    else if (msg.payload[i][0] == \"North Head\")\n        nh = i;\n    else if (msg.payload[i][0] == \"Sydney Airport\") {\n        ap = i;\n        msg.payload[i][0] = \"Syd Airport\";\n    } else if (msg.payload[i][0] == \"Wattamolla\")\n        wo = i;\n    else if (msg.payload[i][0] == \"Kiama\")\n        ki = i;\n}\nmsg.payload={\n    L:msg.payload[nh][0],W:msg.payload[nh][3]+'-'+msg.payload[nh][4]+' '+msg.payload[nh][2],\n    T:msg.payload[nh][1].substr(msg.payload[nh][1].indexOf(\"/\")+1),\n    L1:msg.payload[sh][0],W1:msg.payload[sh][3]+'-'+msg.payload[sh][4]+' '+msg.payload[sh][2],\n    T1:msg.payload[sh][1].substr(msg.payload[sh][1].indexOf(\"/\")+1),\n    L2:msg.payload[fd][0],W2:msg.payload[fd][3]+'-'+msg.payload[fd][4]+' '+msg.payload[fd][2],\n    T2:msg.payload[fd][1].substr(msg.payload[fd][1].indexOf(\"/\")+1),\n    L3:msg.payload[ap][0],W3:msg.payload[ap][3]+'-'+msg.payload[ap][4]+' '+msg.payload[ap][2],\n    T3:msg.payload[ap][1].substr(msg.payload[ap][1].indexOf(\"/\")+1),\n    L4:msg.payload[wo][0],W4:msg.payload[wo][3]+'-'+msg.payload[wo][4]+' '+msg.payload[wo][2],\n    T4:msg.payload[wo][1].substr(msg.payload[wo][1].indexOf(\"/\")+1),\n    L5:msg.payload[ki][0],W5:msg.payload[ki][3]+'-'+msg.payload[ki][4]+' '+msg.payload[ki][2],\n    T5:msg.payload[ki][1].substr(msg.payload[ki][1].indexOf(\"/\")+1)\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 850,
+        "y": 440,
+        "wires": [
+            [
+                "44497563.afed3c"
+            ]
+        ]
+    },
+    {
+        "id": "44497563.afed3c",
+        "type": "json",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 970,
+        "y": 440,
+        "wires": [
+            [
+                "413522ae.87b8ac",
+                "e8c70bb1.5ac958"
+            ]
+        ]
+    },
+    {
+        "id": "5e0da668.930de",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Sydney AIrport",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "th[id=tSYD-station-sydney-airport] a, td[headers$=tSYD-station-sydney-airport]",
+        "ret": "html",
+        "as": "single",
+        "x": 540,
+        "y": 440,
+        "wires": [
+            [
+                "f9e5854d.14da68"
+            ]
+        ]
+    },
+    {
+        "id": "ccab1e70.f1acc8",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Wattamolla",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "th[id=tSYD-station-wattamolla] a, td[headers$=tSYD-station-wattamolla]",
+        "ret": "html",
+        "as": "single",
+        "x": 530,
+        "y": 480,
+        "wires": [
+            [
+                "f9e5854d.14da68"
+            ]
+        ]
+    },
+    {
+        "id": "c44682f8.d37d38",
+        "type": "html",
+        "z": "dafc1d92.0b50e8",
+        "name": "Kiama",
+        "property": "payload",
+        "outproperty": "payload",
+        "tag": "th[id=tILL-station-kiama] a, td[headers$=tILL-station-kiama]",
+        "ret": "html",
+        "as": "single",
+        "x": 510,
+        "y": 520,
+        "wires": [
+            [
+                "f9e5854d.14da68"
+            ]
+        ]
+    },
+    {
+        "id": "408ed424.0cd10c",
+        "type": "debug",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 110,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "b4d0e0d0.7028d",
+        "type": "function",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "func": "context.global.savedF = msg.payload;\ncontext.global.lastFTime = new Date().getTime();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1050,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5ff7090.880fcf8",
+        "type": "debug",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 830,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "16d08506.dc2f7b",
+        "type": "debug",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 300,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "e8c70bb1.5ac958",
+        "type": "function",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "func": "context.global.savedW = msg.payload;\ncontext.global.lastWTime = new Date().getTime();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1090,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f6c031aa.0edd7",
+        "type": "debug",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 460,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "bd5d1acc.66093",
+        "type": "debug",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 530,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "16140808.b29288",
+        "type": "http in",
+        "z": "dafc1d92.0b50e8",
+        "name": "",
+        "url": "/jsonwind",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 440,
+        "wires": [
+            [
+                "e2597824.d623e8"
+            ]
+        ]
+    }
+]
